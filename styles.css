@@ -4,6 +4,10 @@
     box-sizing: border-box;
 }
 
+html {
+    scroll-behavior: smooth;
+}
+
 :root {
     --color-primary: #92400e;
 
@@ -34,6 +38,31 @@ body {
     line-height: 1.6;
     color: var(--color-gray-800);
     background-color: var(--color-white);
+    cursor: url('src/assents/imagens/cursormachado1.svg') 0 0, auto;
+}
+
+/* Pre-carregamento da imagem de clique para evitar "piscadas" ou desaparecimento */
+body::after {
+    content: url('src/assents/imagens/cursormachado2.svg');
+    display: none;
+}
+
+/* Aplicação global do cursor para evitar que suma em qualquer elemento */
+* {
+    cursor: url('src/assents/imagens/cursormachado1.svg') 0 0, auto;
+}
+
+*:active {
+    cursor: url('src/assents/imagens/cursormachado2.svg') 0 0, auto !important;
+}
+
+/* Elementos interativos mantêm o comportamento de pointer mas com a imagem customizada */
+a, button, .btn, .project-card, .social-icon-header, input, textarea, select, img, svg {
+    cursor: url('src/assents/imagens/cursormachado1.svg') 0 0, pointer !important;
+}
+
+a:active, button:active, .btn:active, .project-card:active, .social-icon-header:active, input:active, textarea:active, select:active, img:active, svg:active {
+    cursor: url('src/assents/imagens/cursormachado2.svg') 0 0, pointer !important;
 }
  
 
@@ -174,6 +203,10 @@ body {
     transform: translateY(-2px);
 }
 
+.social-icon-header svg, .logo svg, .menu-toggle svg {
+    pointer-events: none;
+}
+
 @media (min-width: 768px) {
     .desktop-nav {
         display: flex;
@@ -220,6 +253,28 @@ body {
 .btn-secondary:hover {
     background: var(--color-primary-light);
 }
+.btn-tertiary {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 1rem 2rem;
+    border-radius: 0.5rem;
+    text-decoration: none;
+    font-weight: 600;
+    transition: all 0.3s;
+    border: none;
+    cursor: pointer;
+    background: var(--color-primary);
+    color: var(--color-white);
+    margin: 50px auto 0;
+    width: max-content;
+}
+
+.btn-tertiary:hover {
+    background: var(--color-primary-dark);
+    transform: translateY(-2px);
+}
+
 
 .btn-block {
     width: 100%;
@@ -499,17 +554,24 @@ section {
 }
 
 .project-image {
-    aspect-ratio: 1;
-    background: linear-gradient(135deg, var(--color-gray-900) 0%, var(--color-primary) 100%);
+    width: 100%;
+    aspect-ratio: 16 / 10;
+    overflow: hidden;
+    background: var(--color-gray-100);
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 5rem;
-    transition: transform 0.3s;
 }
 
-.project-card:hover .project-image {
-    transform: scale(1.05);
+.project-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.5s ease;
+}
+
+.project-card:hover .project-image img {
+    transform: scale(1.1);
 }
 
 .project-info {

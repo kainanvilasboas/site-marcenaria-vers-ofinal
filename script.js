@@ -35,19 +35,30 @@ contactForm.addEventListener('submit', (e) => {
 });
 
 // Smooth scroll for anchor links
-document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+document.querySelectorAll('a[href*="#"]').forEach(anchor => {
     anchor.addEventListener('click', function (e) {
-        e.preventDefault();
-        const target = document.querySelector(this.getAttribute('href'));
-        if (target) {
-            const headerOffset = 80;
-            const elementPosition = target.getBoundingClientRect().top;
-            const offsetPosition = elementPosition + window.pageYOffset - headerOffset;
+        const href = this.getAttribute('href');
+        
+        // Se for um link apenas com ID (#...) ou um link para a mesma página (index.html#...)
+        const isInternal = href.startsWith('#');
+        const isSamePage = href.startsWith('index.html#') && (window.location.pathname.endsWith('index.html') || window.location.pathname.endsWith('/'));
+        const isProjectsSamePage = href.startsWith('projetos.html#') && window.location.pathname.endsWith('projetos.html');
 
-            window.scrollTo({
-                top: offsetPosition,
-                behavior: 'smooth'
-            });
+        if (isInternal || isSamePage || isProjectsSamePage) {
+            const targetId = href.split('#')[1];
+            const target = document.getElementById(targetId);
+            
+            if (target) {
+                e.preventDefault();
+                const headerOffset = 80;
+                const elementPosition = target.getBoundingClientRect().top;
+                const offsetPosition = elementPosition + window.pageYOffset - headerOffset;
+
+                window.scrollTo({
+                    top: offsetPosition,
+                    behavior: 'smooth'
+                });
+            }
         }
     });
 });
