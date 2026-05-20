@@ -161,3 +161,76 @@ document.addEventListener('DOMContentLoaded', () => {
     revealElements.forEach(el => observer.observe(el));
 });
 
+// Lightbox / Modal para imagens dos projetos
+document.addEventListener('DOMContentLoaded', () => {
+    const projectImages = document.querySelectorAll('.project-card .project-image');
+    const lightbox = document.getElementById('lightboxModal');
+    const lightboxImg = document.getElementById('lightboxImg');
+    const lightboxCaption = document.getElementById('lightboxCaption');
+    const lightboxClose = document.querySelector('.lightbox-close');
+
+    if (projectImages.length > 0 && lightbox && lightboxImg) {
+        projectImages.forEach(imageContainer => {
+            imageContainer.addEventListener('click', (e) => {
+                e.stopPropagation(); // Evita propagação de eventos
+                const img = imageContainer.querySelector('img');
+                if (!img) return;
+
+                const src = img.getAttribute('src');
+                const alt = img.getAttribute('alt');
+                
+                // Pega a categoria e título do card para a legenda
+                const card = imageContainer.closest('.project-card');
+                const category = card.querySelector('.project-category')?.textContent || '';
+                const title = card.querySelector('h3')?.textContent || '';
+                
+                lightboxImg.setAttribute('src', src);
+                lightboxImg.setAttribute('alt', alt);
+                
+                if (category && title) {
+                    lightboxCaption.innerHTML = `<span class="lightbox-category">${category}</span> &bull; <span class="lightbox-title">${title}</span>`;
+                    lightboxCaption.style.display = 'block';
+                } else if (title) {
+                    lightboxCaption.innerHTML = `<span class="lightbox-title">${title}</span>`;
+                    lightboxCaption.style.display = 'block';
+                } else {
+                    lightboxCaption.style.display = 'none';
+                }
+                
+                lightbox.classList.add('active');
+                document.body.style.overflow = 'hidden'; // Impede o scroll do body quando aberto
+            });
+        });
+
+        // Fechar lightbox ao clicar no botão X
+        if (lightboxClose) {
+            lightboxClose.addEventListener('click', closeLightbox);
+        }
+
+        // Fechar ao clicar fora da imagem
+        lightbox.addEventListener('click', (e) => {
+            if (e.target === lightbox || e.target.classList.contains('lightbox-content-container')) {
+                closeLightbox();
+            }
+        });
+
+        // Fechar ao pressionar ESC
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape' && lightbox.classList.contains('active')) {
+                closeLightbox();
+            }
+        });
+
+        function closeLightbox() {
+            lightbox.classList.remove('active');
+            document.body.style.overflow = ''; // Restaura o scroll
+            // Limpa o src após a transição de fade-out
+            setTimeout(() => {
+                if (!lightbox.classList.contains('active')) {
+                    lightboxImg.setAttribute('src', '');
+                }
+            }, 300);
+        }
+    }
+});
+
